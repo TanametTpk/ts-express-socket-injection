@@ -5,6 +5,7 @@ import socketio from "socket.io";
 import { container } from "tsyringe";
 import HTTPBaseController from "./abstracts/HttpBaseController";
 import { registerController } from "./configs/http/controllers";
+import SocketBaseController from "./abstracts/SocketBaseController";
 
 export default class Server implements IServer {
 	private static instance: Server;
@@ -40,8 +41,12 @@ export default class Server implements IServer {
 
 	private configControllers() {
 		registerController();
-		const controllers: HTTPBaseController[] = container.resolveAll("HTTPController");
-		controllers.map((controller) => this.app.use(controller.getPath(), controller.getRoutes()));
+
+		const httpControllers: HTTPBaseController[] = container.resolveAll("HTTPController");
+		httpControllers.map((controller) => this.app.use(controller.getPath(), controller.getRoutes()));
+
+		const socketControllers: SocketBaseController[] = container.resolveAll("SocketController");
+		socketControllers.map((controller) => controller.init(this.io));
 	}
 
 	public start(port: number | string): void {
