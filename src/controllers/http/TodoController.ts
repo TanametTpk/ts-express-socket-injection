@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { container, inject, injectable, registry } from "tsyringe";
-import AbstractController from "../abstracts/AbstractController";
-import ITodoService from "../interfaces/services/ITodoService";
-import TodoService from "../services/TodoService";
+import HTTPBaseController from "../../abstracts/HttpBaseController";
+import ITodoService from "../../interfaces/services/ITodoService";
+import TodoService from "../../services/TodoService";
 
 @registry([{ token: "ITodoService", useClass: TodoService }])
 @injectable()
-export default class TodoController extends AbstractController {
+export default class TodoController extends HTTPBaseController {
 	constructor(@inject("ITodoService") private todoService: ITodoService) {
 		super("/todo");
 	}
@@ -20,4 +20,4 @@ export default class TodoController extends AbstractController {
 	}
 }
 
-container.register("Controller", TodoController);
+container.register("HTTPController", TodoController);

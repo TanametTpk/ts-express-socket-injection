@@ -6,9 +6,8 @@ import Server from "./server";
 import prisma from "./configs/prisma/client";
 
 const main = async () => {
-	const PORT = process.env.PORT || 8080;
-	const server = new Server(PORT);
-	server.start();
+	const server = Server.getInstance();
+	server.start(process.env.PORT || 8080);
 };
 
 main()

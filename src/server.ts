@@ -1,22 +1,36 @@
 import express, { Application } from "express";
 import IServer from "./interfaces/IServer";
 import http from "http";
+import socketio from "socket.io";
 import { container } from "tsyringe";
-import AbstractController from "./abstracts/AbstractController";
+import HTTPBaseController from "./abstracts/HttpBaseController";
 import { registerController } from "./configs/http/controllers";
 
 export default class Server implements IServer {
+	private static instance: Server;
 	private app: Application;
-	private port: number | string;
 	private server: http.Server;
+	private io: socketio.Server;
 
-	constructor(port: number | string) {
+	constructor() {
 		this.app = express();
 		this.server = http.createServer(this.app);
-		this.port = port;
+		this.io = new socketio.Server(this.server);
 
 		this.configMiddlewares();
 		this.configControllers();
+	}
+
+	public static getInstance(): Server {
+		if (!this.instance) {
+			this.instance = new Server();
+		}
+
+		return this.instance;
+	}
+
+	public getSocketIO(): socketio.Server {
+		return this.io;
 	}
 
 	private configMiddlewares() {
@@ -26,13 +40,13 @@ export default class Server implements IServer {
 
 	private configControllers() {
 		registerController();
-		const controllers: AbstractController[] = container.resolveAll("Controller");
+		const controllers: HTTPBaseController[] = container.resolveAll("HTTPController");
 		controllers.map((controller) => this.app.use(controller.getPath(), controller.getRoutes()));
 	}
 
-	public start(): void {
-		this.server.listen(this.port, () => {
-			console.log("listen on port:", this.port);
+	public start(port: number | string): void {
+		this.server.listen(port, () => {
+			console.log("listen on port:", port);
 		});
 	}
 

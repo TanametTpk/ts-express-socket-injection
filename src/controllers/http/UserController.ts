@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { container, inject, injectable, registry } from "tsyringe";
-import AbstractController from "../abstracts/AbstractController";
-import IUserService from "../interfaces/services/IUserService";
-import UserService from "../services/UserService";
+import HTTPBaseController from "../../abstracts/HttpBaseController";
+import IUserService from "../../interfaces/services/IUserService";
+import UserService from "../../services/UserService";
 
 @registry([{ token: "IUserService", useClass: UserService }])
 @injectable()
-export default class UserController extends AbstractController {
+export default class UserController extends HTTPBaseController {
 	constructor(@inject("IUserService") private userService: IUserService) {
 		super("/users");
 	}
@@ -39,4 +39,4 @@ export default class UserController extends AbstractController {
 	}
 }
 
-container.register("Controller", UserController);
+container.register("HTTPController", UserController);

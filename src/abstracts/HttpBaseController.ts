@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-export default abstract class AbstractController {
+export default abstract class HTTPBaseController {
 	protected routes: Router;
 	private path: string;
 

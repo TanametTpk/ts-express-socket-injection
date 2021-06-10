@@ -1,4 +1,4 @@
 export default interface IServer {
-	start(): void;
+	start(port: number | string): void;
 	stop(): void;
 }
