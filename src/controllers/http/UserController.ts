@@ -27,6 +27,16 @@ export default class UserController extends HTTPBaseController {
 		res.json(await this.userService.getUserById(userId));
 	}
 
+	async createUser(req: Request, res: Response) {
+		let username: string | undefined = req.body.username;
+		if (!username) {
+			res.status(403).json({ message: "Bad Request" });
+			return;
+		}
+
+		res.json(await this.userService.createUser(username));
+	}
+
 	async updateUsername(req: Request, res: Response) {
 		let id: string = req.params.id;
 		let username: string = req.body.username;
