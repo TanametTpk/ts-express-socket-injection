@@ -15,16 +15,18 @@ export default class UserController extends SocketBaseController {
 
 	configureRoute(): void {
 		this.io.on("connection", (socket: Socket) => {
-			socket.on("user:get", this.getUsers);
-			socket.on("user:getById", this.getUserById);
-			socket.on("user:create", this.createUser);
-			socket.on("user:update", this.updateUsername);
-			socket.on("user:delete", this.deleteUser);
+			socket.on("user:get", (...args: any) => this.getUsers.apply(this, args));
+			socket.on("user:getById", (...args: any) => this.getUserById.apply(this, args));
+			socket.on("user:create", (...args: any) => this.getUserById.apply(this, args));
+			socket.on("user:update", (...args: any) => this.getUserById.apply(this, args));
+			socket.on("user:delete", (...args: any) => this.getUserById.apply(this, args));
 		});
 	}
 
 	async getUsers(callback: (user: User[]) => void) {
-		callback(await this.userService.getUsers());
+		let users = await this.userService.getUsers();
+		this.io.emit("user:boardcast", users);
+		callback(users);
 	}
 
 	async getUserById(id: string, callback: (user: User | null) => void) {

@@ -16,7 +16,7 @@ export default class Server implements IServer {
 	constructor() {
 		this.app = express();
 		this.server = http.createServer(this.app);
-		this.io = new socketio.Server(this.server);
+		this.io = new socketio.Server(this.server, { cors: { origin: "*" } });
 
 		this.configMiddlewares();
 		this.configControllers();
