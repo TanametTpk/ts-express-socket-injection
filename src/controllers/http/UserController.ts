@@ -13,6 +13,7 @@ export default class UserController extends HTTPBaseController {
 
 	configureRoute(): void {
 		this.routes.get("/", (req, res) => this.getUsers(req, res));
+		this.routes.post("/", (req, res) => this.createUser(req, res));
 		this.routes.get("/:id", (req, res) => this.getUserById(req, res));
 		this.routes.put("/:id", (req, res) => this.updateUsername(req, res));
 		this.routes.delete("/:id", (req, res) => this.deleteUser(req, res));
