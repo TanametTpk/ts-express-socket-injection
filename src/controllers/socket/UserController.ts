@@ -15,26 +15,32 @@ export default class UserController extends SocketBaseController {
 
 	configureRoute(): void {
 		this.io.on("connection", (socket: Socket) => {
+			socket.on("user:get", this.getUsers);
+			socket.on("user:getById", this.getUserById);
+			socket.on("user:create", this.createUser);
 			socket.on("user:update", this.updateUsername);
+			socket.on("user:delete", this.deleteUser);
 		});
 	}
 
-	async getUsers(req: Request, res: Response) {
-		res.json(await this.userService.getUsers());
+	async getUsers(callback: (user: User[]) => void) {
+		callback(await this.userService.getUsers());
 	}
 
-	async getUserById(req: Request, res: Response) {
-		let userId: string = req.params.id;
-		res.json(await this.userService.getUserById(userId));
+	async getUserById(id: string, callback: (user: User | null) => void) {
+		callback(await this.userService.getUserById(id));
+	}
+
+	async createUser(username: string, callback: (user: User) => void) {
+		callback(await this.userService.createUser(username));
 	}
 
 	async updateUsername(id: string, username: string, callback: (user: User) => void) {
 		callback(await this.userService.updateUser(id, username));
 	}
 
-	async deleteUser(req: Request, res: Response) {
-		let id: string = req.params.id;
-		res.json(await this.userService.deleteUser(id));
+	async deleteUser(id: string, callback: (user: User) => void) {
+		callback(await this.userService.deleteUser(id));
 	}
 }
 

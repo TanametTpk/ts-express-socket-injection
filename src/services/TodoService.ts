@@ -17,6 +17,19 @@ export default class TodoService implements ITodoService {
 		return this.client.todo.findMany();
 	}
 
+	createTodo(text: string, userId: string): Promise<Todo> {
+		return this.client.todo.create({
+			data: {
+				text,
+				author: {
+					connect: {
+						id: userId,
+					},
+				},
+			},
+		});
+	}
+
 	updateTodo(id: string, text: string): Promise<Todo> {
 		return this.client.todo.update({
 			where: { id },

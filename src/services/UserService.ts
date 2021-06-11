@@ -23,6 +23,14 @@ export default class UserService implements IUserService {
 		});
 	}
 
+	createUser(name: string): Promise<User> {
+		return this.client.user.create({
+			data: {
+				name,
+			},
+		});
+	}
+
 	updateUser(id: string, name: string): Promise<User> {
 		return this.client.user.update({
 			where: { id },
